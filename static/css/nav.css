@@ -1,0 +1,20 @@
+/* css 重置 */
+*{margin:0; padding:0; list-style:none; }
+body{ background:#fff; font:normal 12px/22px 宋体;  }
+img{ border:0;  }
+a{ text-decoration:none; color:#333;  }
+a:hover{ color:#1974A1;  }
+
+
+/* 本例子css */
+.clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden;}
+.nav{ padding:0 20px; height:34px; line-height:34px; background:#39A4DC;  position:relative; z-index:1;  }
+.nav a{ color:#fff;  }
+.nav .nLi{ float:left;  position:relative; display:inline;  }
+.nav .nLi h3{ float:left;  }
+.nav .nLi h3 a{ display:block; padding:0 20px; font-size:14px; font-weight:bold;  }
+.nav .sub{ display:none; width:100px; left:0; top:34px;  position:absolute; background:#4E4E4E;  line-height:26px; padding:5px 0;  }
+.nav .sub li{ zoom:1; }
+.nav .sub a{ display:block; padding:0 10px; }
+.nav .sub a:hover{ background:#6d6d6d; color:#fff;  }
+.nav .on h3 a{ background:#4E4E4E; color:#fff;   }

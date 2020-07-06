@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}python flask user page{% endblock %}
+{% block head %}
+    <style type="text/css"></style>
+{% endblock %}
+{% block content %}
+    <form action="{{ url_for('user.login') }}" method="post">
+        {% if form.errors %}
+            <ul>
+                {% for name, errors in form.errors.items() %}
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        {% endif %}
+        账号：{{ form.accountNumber(size=20) }}<label>{{ form.accountNumber.errors[0] }}</label><br/>
+        密码：<input name="password" type="password"/><br/>
+        {{ form.hidden_tag() }}
+        <button type="submit">登录</button>
+    </form>
+
+{% endblock %}

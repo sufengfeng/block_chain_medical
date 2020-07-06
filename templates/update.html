@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="Keywords" content="HTML,CSS,jQuery,Bootstrap,Web development,programming,portfolio,source code,colors,company,business,personal,Party,helloween,Ticket,Newsletter">
+	<meta name="Description" content="Well designed, easy to understand and use">
+
+	<!-- Page Title -->
+	<title>CODEXO</title>
+	<!-- / -->
+
+	<!---Font Icon-->
+	<link href="static/css/font-awesome.min.css" rel="stylesheet">
+
+	<!-- / -->
+
+	<!-- Plugin CSS -->
+	<link href="static/css/bootstrap.min.css" rel="stylesheet">
+	<link href="static/css/magnific-popup.css" rel="stylesheet">
+	<link href="static/css/slick.css" rel="stylesheet">
+	<link type="text/css" rel="stylesheet" href="static/css/killercarousel.css">
+	<link href="static/css/jquery.fancybox.min.css" rel="stylesheet">
+	<link href="static/css/YouTubePopUp.css" rel="stylesheet">
+	<!-- / -->
+
+	<!-- Theme Style -->
+	<link href="static/css/style.css" rel="stylesheet">
+	<link href="static/css/responsive.css" rel="stylesheet">
+	<!-- / -->
+
+	<!-- Favicon -->
+	<link rel="icon" href="static/images/fav-icon.png" />
+	<!-- / -->
+</head>
+
+<!-- Body Start -->
+
+<body data-spy="scroll" data-target="#nav-part" data-offset="90">
+
+	<!-- back to top start -->
+	<a href="#" id="back-top-btn"><i class="fa fa-long-arrow-right"></i></a>
+	<!-- back to top end -->
+
+	<!-- Loading -->
+	<div id="musa-loader">
+		<div class="loader">
+			<div class="loader__bar"></div>
+			<div class="loader__bar"></div>
+			<div class="loader__bar"></div>
+			<div class="loader__bar"></div>
+			<div class="loader__bar"></div>
+			<div class="loader__ball"></div>
+		</div>
+	</div>
+	<!-- Loading -->
+
+	<!-- Header -->
+<header>
+		<nav id="nav-part" class="navbar header-nav other-nav sticky-top navbar-expand-md custom_nav">
+			<div class="container menu-nav">
+				<a class="navbar-brand" href="#home">
+					<img src="static/images/h-logo.png" class="img-fluid" alt="logo">
+				</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+					<span></span>
+					<span></span>
+					<span></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="navbar-nav m-auto">
+						<li class="nav-item"><a class="nav-link" href="index">HOME<span class="sr-only">(current)</span></a></li>
+						<li class="nav-item"><a class="nav-link" href="update">UPDATA</a></li>
+					</ul>
+					<div class="hero-btn nav-btn">
+						<a href="get-started" class="btn">{{user.name}}
+						</a>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+	</header>
+	<!-- Header End -->
+
+	<!-- Main Start -->
+
+
+	<!-- Home Banner Start -->
+	<section id="about-banner" class="about-banner blog-details">
+		<div class="about-bg-60 flex-center">
+			<div class="container">
+				<div class="row heading color-w justify-content-center">
+					<div class="col-md-12 text-center">
+						<div class="banner-text">
+							<img src="static/images/best-product-icon-7.png" class="img-fluid" alt="product">
+							<h2>Tools for business<br>
+								startup for product success</h2>
+							<p>Jhon Smith <span>|</span> April 1, 2019</p>
+							<h3>STRATEGY</h3>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+<!--<form action="/handling-page" method="post">-->
+<!--  <div class="cont-group">-->
+<!--    <label for="name">用户名：</label>-->
+<!--    <input type="text" id="name" name="user_name" />-->
+<!--  </div>-->
+<!--  <div class="cont-group">-->
+<!--    <label for="passwd">密码：</label>-->
+<!--    <input type="password" id="passwd" name="user_passwd" />-->
+<!--  </div>-->
+<!--  <div class="cont-group">-->
+<!--    <input type="submit" id="submit" name="submit_button" value="提交" />-->
+<!--  </div>-->
+<!--</form>-->
+
+
+	<!-- Feature -->
+	<section id="update" class="section feature">
+		<div class="col-lg-6 col-md-6 col-sm-12">
+			<div class="form-area">
+				<form  id='updateblock' class="cont-inline cont-mess flato" action="update_block" method="post">
+<div class="cont-group">						<input  type="text" value={{block.index}}  		name="index"  id="index" readonly="true"/>						</div>
+<div class="cont-group">						<input  type="text" value={{block.timestamp}}  	name="timestamp" id="timestamp" readonly="true"/>					</div>
+<div class="cont-group">						<input  type="text" value={{block.doctor}} 		name="doctor" id="doctor" readonly="true"/>					</div>
+<div class="cont-group">						<input  type="text" value={{block.patient}}  	name="patient" id="patient" readonly="true"/>					</div>
+<div class="cont-group">						<input  type="text" value={{block.describe}}  	name="describe" id="describe"/>					</div>
+<div class="cont-group">						<input  type="text" value={{block.proof}}  		name="proof" id="proof" readonly="true"/>						</div>
+<div class="cont-group">						<input  type="text" value={{block.encryption}}  name="encryption" id="encryption" readonly="true"/>				</div>
+					<div class="hero-btn" onclick="updateblock()">
+						<a  class="btn submit-btn">UPDATE BLOCK
+							<i class="fa fa-long-arrow-right"></i>
+						</a>
+					</div>
+
+				</form>
+			</div>
+		</div>
+	</section>
+	<!--  contact Start  -->
+	<section id="contact" class="section contact">
+		<div class="container">
+			<div class="row align-items-center text-center">
+				<div class="col-md-12 text-center">
+					<img src="static/images/footer-logo.png" class="img-fluid" alt="">
+				</div>
+			</div>
+			<div class="row align-items-center text-center">
+				<div class="col-md-12 text-center contact-nav">
+
+					<ul class="m-auto">
+						<li class="nav-item"><a class="nav-link" href="index">HOME<span class="sr-only">(current)</span></a></li>
+						<li class="nav-item"><a class="nav-link" href="update">UPDATA</a></li>
+					</ul>
+				</div>
+			</div>
+			<div class="row ">
+				<div class="col-md-12 cont-icon text-center">
+					<ul class="">
+						<li><a href="#"><i class="fa fa-facebook"></i> </a></li>
+						<li><a href="#"><i class="fa fa-twitter"></i> </a></li>
+						<li><a href="#"><i class="fa fa-behance"></i> </a></li>
+						<li><a href="#"><i class="fa fa-linkedin"></i> </a></li>
+					</ul>
+
+				</div>
+			</div>
+			<div class="row ">
+				<div class="col-md-12 cont-text text-center">
+					<p>Copyright &copy; 2020.Company name All rights reserved.</p>
+
+				</div>
+			</div>
+		</div>
+	</section>
+	<!--  contact End  -->
+
+
+	<!-- jQuery -->
+	<script src="static/js/jquery-3.2.1.min.js"></script>
+	<script src="static/js/jquery-migrate-3.0.0.min.js"></script>
+	<!-- Plugins -->
+	<script src="static/js/popper.min.js"></script>
+	<script src="static/js/SmoothScroll.js"></script>
+	<script src="static/js/waypoints.js"></script>
+	<script src="static/js/mixitup.min.js"></script>
+	<script src="static/js/slick.min.js"></script>
+	<script src="static/js/Carousel.js"></script>
+	<script src="static/js/isotope.pkgd.min.js"></script>
+	<script src="static/js/counter.js"></script>
+	<script src="static/js/jQuery-plugin-progressbar.js"></script>
+	<script src="static/js/jquery.fancybox.min.js"></script>
+	<script src="static/js/YouTubePopUp.jquery.js"></script>
+	<script src="static/js/bootstrap.min.js"></script>
+	<!-- custom -->
+
+	<script src="static/js/custom.js"></script>
+ <script type="text/javascript" charset="UTF-8">
+		function updateblock(){
+		var params = {"index":document.getElementById('index').value,
+		"timestamp":document.getElementById('timestamp').value,
+		"doctor":document.getElementById('doctor').value,
+		"patient":document.getElementById('patient').value,
+		"describe":document.getElementById('describe').value,
+		"proof":document.getElementById('proof').value,
+		"encryption":document.getElementById('encryption').value
+		};
+
+        $.ajax({
+            url:'updateblock',
+            type:'POST',
+            data:JSON.stringify(params),
+            contentType:'application/json',
+            success:function (response) {
+            var obj = JSON.parse(response); //由JSON字符串转换为JSON对象
+                if (obj.errno==200){
+                    alert(obj.message);
+                    location.reload()
+                }else{
+                    alert(response.errmsg)
+                }
+            }
+        })
+        }
+    </script>
+</body>
+<!-- Body End -->
+
+</html>
