@@ -5,10 +5,10 @@ import socket
 import sys
 import select
 import time
-from common import db
+
 from config import SERVER_PORT, DEF_REGIST, DEF_ADDBLOCK
 from server.data_format import dict2DataFormat, DataFormat2dict, DataFormat
-from server.server_block_model import dict2BlockS, BlockS, BlockS2dict
+from server.server_block_model import BlockS
 
 
 # 向新注册节点发送现有的区块链数据
@@ -17,12 +17,12 @@ def send_all_block(client):
     blockServers = blockServer_quer.all()
     print(blockServers)
     for block in blockServers:
-        json_str = json.dumps(block, default=BlockS2dict)
+        json_str = json.dumps(block, default=BlockS.BlockS2dict)
         dataFormat = DataFormat(DEF_ADDBLOCK, json_str)
         sendData = json.dumps(dataFormat, default=DataFormat2dict)
         try:
             client.sendall(bytes(sendData, encoding="utf-8"))
-        except Exception as ex:
+        except Exception as err:
             print("Error: 发送错误" + str(sys._getframe().f_lineno) + " " + err)
             return
 
@@ -37,9 +37,8 @@ def server_handl_rev(inpu, sk1, sk, data):
         sk.sendall(bytes(json_str, encoding="utf-8"))
     elif d_format.dataType == DEF_ADDBLOCK:  # 增加节点
         # 增加中央服务器节点
-        blockS = json.loads(d_format.data, object_hook=dict2BlockS)
-        db.session.add(blockS)
-        db.session.commit()
+        blockS = json.loads(d_format.data, object_hook=BlockS.dict2BlockS)
+        BlockS.add_block(block=blockS)
         # 发送添加区块到所有节点
         for client in inpu:
             if client == sk1:  # 不发送给自身
@@ -65,14 +64,6 @@ def server_accept_process(sk1, port):
                     inpu.remove(sk)
 
 
-def add_first_block():
-    timestamp = time.time()
-    block = BlockS(timestamp=timestamp, doctor="admin", patient="patient", describe="None")
-    block.encryption = hash(block)  # 同态加密
-    db.session.add(block)
-    db.session.commit()
-
-
 # 中央服务器
 class CentralServer():
     def __init__(self):
@@ -83,20 +74,22 @@ class CentralServer():
             _thread.start_new_thread(server_accept_process, (sk1, SERVER_PORT))  # 创建侦听等待线程
         except Exception as err:
             print("Error: 无法启动线程" + str(sys._getframe().f_lineno) + " " + err)
-        add_first_block()  # 添加首节点
+        BlockS.add_first_block()  # 添加首节点
         print("Creat Central Server successfully!!")
 
 
 if __name__ == '__main__':
     server = CentralServer()  # 创建中心服务器
-    # 创建两个线程
-    try:
-        # _thread.start_new_thread(client_test, ("Thread-1", 1,))
-        # _thread.start_new_thread(client_test, ("Thread-2", 2,))
-        # _thread.start_new_thread(client_test, ("Thread-3", 3,))
-        # _thread.start_new_thread(client_test, ("Thread-4", 4,))
-        pass
-    except Exception as err:
-        print("Error: 无法启动线程" + str(sys._getframe().f_lineno) + " " + err)
     while 1:
-        pass
+        print("running...")
+        time.sleep(10)
+
+# # 创建两个线程
+#     try:
+#         # _thread.start_new_thread(client_test, ("Thread-1", 1,))
+#         # _thread.start_new_thread(client_test, ("Thread-2", 2,))
+#         # _thread.start_new_thread(client_test, ("Thread-3", 3,))
+#         # _thread.start_new_thread(client_test, ("Thread-4", 4,))
+#         pass
+#     except Exception as err:
+#         print("Error: 无法启动线程" + str(sys._getframe().f_lineno) + " " + err)

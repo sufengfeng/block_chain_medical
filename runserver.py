@@ -224,27 +224,18 @@ def index():
 
 if __name__ == '__main__':
     parser = ArgumentParser()
-    parser.add_argument('-p', '--port', default=5050, type=int, help='port to listen on')#端口
-    parser.add_argument('-r', '--sRun', default=0, type=int, help='central server on')#运行节点服务器还是中央服务器
+    parser.add_argument('-p', '--port', default=5050, type=int, help='port to listen on')  # 端口
+
     args = parser.parse_args()
     port = args.port
-    sRun = args.sRun
 
-    if sRun == 0:  # 开启节点服务器
-        client = ClientNode()
-        if(client==None):
-            exit(-1)
-        ret = client.regesiter2server()
-        if ret == 0:
-            print("注册成功，节点正常运行！！")
-            app.run(debug=True, host='127.0.0.1', port=port)
-        else:
-            print("服务器注册出错，开启中央服务器，并尝试再次连接！！")
-    elif sRun == 1:  # 开启中央服务器
-        server = CentralServer()  # 创建中心服务器
-        while 1:
-            print("running...")
-            time.sleep(10)
+    client = ClientNode()
+    if (client == None):
+        exit(-1)
+    ret = client.regesiter2server()
+    if ret == 0:
+        print("注册成功，节点正常运行！！")
+
+        app.run(debug=True, host='127.0.0.1', port=port)
     else:
-        print("error param!!!")
-        exit(0)
+        print("服务器注册出错，开启中央服务器，并尝试再次连接！！")
