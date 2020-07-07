@@ -1,4 +1,5 @@
 # config=utf-8
+import copy
 import json
 import hashlib
 import sys
@@ -54,26 +55,7 @@ class BlockS(Base):
         block_string = json.dumps(block, sort_keys=True).encode()
         return hashlib.sha256(block_string).hexdigest()
 
-    # 添加区块
-    @staticmethod
-    def add_blockS(block, last_block):
-        Session_class = sessionmaker(bind=engine)  # 建立与数据库的会话连接，这里建立的是一个class不是一个实例对象
-        session = Session_class()  # 这里创建一个会话实例
-        if last_block != None:
-            block.encryption = hash(last_block)  # 同态加密
-        else:
-            block.encryption = hash(block)  # 同态加密
-        try:
-            session.add(block)  # 把要创建的数据对象加入到这个会话中，这个时候是pending状态，添加多个对象使用add_all()
-            session.commit()  # 统一提交会话中的操作
-            session.close()
-            return 0
-        except Exception as e:
-            print(str(sys._getframe().f_lineno))
-            print(e)
-            return -1
-
-    # 清空区块链数据库
+    # 清空区块链数据库，可配置是否清空中央服务器区块链数据库
     @staticmethod
     def tb_blocks_clean():
         Session_class = sessionmaker(bind=engine)  # 建立与数据库的会话连接，这里建立的是一个class不是一个实例对象
@@ -88,13 +70,43 @@ class BlockS(Base):
             print(e)
             session.rollback()
 
-    # 添加首个区块
+    # 添加首个区块，需要填充数据，重新计算
     @staticmethod
     def add_first_block():
         timestamp = time.time()
         BlockS.tb_blocks_clean()
         block = BlockS(index=1, timestamp=timestamp, doctor="admin", patient="patient", describe="None")
-        BlockS.add_blockS(block, last_block=None)
+
+        Session_class = sessionmaker(bind=engine)  # 建立与数据库的会话连接，这里建立的是一个class不是一个实例对象
+        session = Session_class()  # 这里创建一个会话实例
+        block.encryption = hash(block)  # 同态加密
+        try:
+            session.add(block)  # 把要创建的数据对象加入到这个会话中，这个时候是pending状态，添加多个对象使用add_all()
+            session.commit()  # 统一提交会话中的操作
+            session.close()
+            return 0
+        except Exception as e:
+            print(str(sys._getframe().f_lineno))
+            print(e)
+            return -1
+
+    # 客户端添加区块，只进行hash验证，不进行计算
+    @staticmethod
+    def add_blockS(block, last_block):
+        # if block.encryption != hash(last_block):  # 如果本次加入的hash值是上一个区块的hash则认为正确
+        #     print("该区块不满足hash，不能加入到区块链")
+        #     return -1
+        Session_class = sessionmaker(bind=engine)  # 建立与数据库的会话连接，这里建立的是一个class不是一个实例对象
+        session = Session_class()  # 这里创建一个会话实例
+        try:
+            session.add(block)  # 把要创建的数据对象加入到这个会话中，这个时候是pending状态，添加多个对象使用add_all()
+            session.commit()  # 统一提交会话中的操作
+            session.close()
+            return 0
+        except Exception as e:
+            print(str(sys._getframe().f_lineno))
+            print(e)
+            return -1
 
     @staticmethod
     def BlockS2dict(data):
@@ -114,6 +126,15 @@ class BlockS(Base):
     def dict2BlockS(d):
         return BlockS(d['index'], d['timestamp'], d['doctor'], d['patient'], d['describe'], d['proof'], d['encryption'])
 
+    @staticmethod
+    def select_all():
+        Session_class = sessionmaker(bind=engine)  # 建立与数据库的会话连接，这里建立的是一个class不是一个实例对象
+        session = Session_class()  # 这里创建一个会话实例
+        listBlockS =session.query(BlockS).filter().all()
+        retListBlockS = copy.deepcopy(listBlockS)
+        session.commit()
+        session.close()
+        return retListBlockS
 
 Base.metadata.create_all(engine)  # 通过基类与数据库进行交互创建表结构，此时表内还没有数据
 

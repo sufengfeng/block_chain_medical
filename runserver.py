@@ -24,6 +24,7 @@ for module in DEFAULT_MODULES:
     app.register_blueprint(module)
 
 
+
 # 增加区块
 def add_Block(patient, describe):
     global user
@@ -33,6 +34,7 @@ def add_Block(patient, describe):
     block.encryption = hash(block)  # 同态加密
     db.session.add(block)
     db.session.commit()
+    ClientNode.server_add_block(block)
 
 
 # 查找
@@ -86,27 +88,27 @@ def index():
 
 
 @app.route('/product', endpoint="product")
-def index():
+def product():
     return render_template('product.html')
 
 
 @app.route('/about-us', endpoint="about-us")
-def index():
+def about():
     return render_template('about-us.html', user=user)
 
 
 @app.route('/feature', endpoint="feature")
-def index():
+def feature():
     return render_template('feature.html')
 
 
 @app.route('/team', endpoint="team")
-def index():
+def team():
     return render_template('team.html')
 
 
 @app.route('/update', endpoint="update", methods=['GET', 'POST'])
-def index():
+def update():
     if request.method == 'POST':
         print(request.form.get("id"))
         block = Block.query.filter(Block.index == request.form.get("id")).first()
@@ -124,27 +126,27 @@ def index():
 
 
 @app.route('/contact', endpoint="contact")
-def index():
+def contact():
     return render_template('contact.html')
 
 
 @app.route('/404-error', endpoint="404-error")
-def index():
+def error():
     return render_template('404-error.html')
 
 
 @app.route('/coming-soon', endpoint="coming-soon")
-def index():
+def coming():
     return render_template('coming-soon.html')
 
 
 @app.route('/blog', endpoint="blog")
-def index():
+def blog():
     return render_template('blog.html')
 
 
 @app.route('/get-started', endpoint="get-started")
-def index():
+def started():
     global user
     user = User()
     return render_template('get-started.html')
@@ -165,7 +167,7 @@ def login():
 
 
 @app.route('/add_block', endpoint="add_block", methods=['GET', 'POST'])
-def login():
+def add_block():
     global user
     if user.role == "doctor":
         if request.method == 'POST':
@@ -180,7 +182,7 @@ def login():
 
 
 @app.route('/updateblock', endpoint="updateblock", methods=['GET', 'POST'])
-def login():
+def updateblock():
     global user
     index = 1
     describe = ""
@@ -199,7 +201,7 @@ def login():
 
 
 @app.route('/regist', endpoint="regist", methods=['GET', 'POST'])
-def index():
+def regist():
     global user
     if request.method == 'POST':
         if user.role != "admin":

@@ -21,7 +21,7 @@ class DataFormat():
 
 if __name__ == "__main__":
     s = DataFormat("132", "2")
-    json_str = json.dumps(s, default=DataFormat2dict)
+    json_str = json.dumps(s, default=DataFormat.DataFormat2dict)
     print(json_str)
-    d_format = json.loads(json_str, object_hook=dict2DataFormat)
+    d_format = json.loads(json_str, object_hook=DataFormat.dict2DataFormat)
     print(d_format.dataType)

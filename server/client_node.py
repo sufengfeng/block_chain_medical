@@ -21,8 +21,10 @@ def client_handl_rev(data):
         else:
             regist_status = -1
     elif d_format.dataType == DEF_ADDBLOCK:  # 增加节点
+        print("not support the format type：" + d_format.dataType)
+        print(d_format.param)
         block = json.loads(d_format.param, object_hook=Block.dict2Block)
-        Block.add_block(block)
+        Block.server_add_block(block,None)
         print("添加区块成功")
     else:
         print("not support the format type：" + d_format.dataType)
@@ -31,28 +33,29 @@ def client_handl_rev(data):
 # 节点服务器处理线程
 def client_accept_process(client, port):
     while 1:
+        data=""
         try:
             data = str(client.recv(1024), encoding="utf-8")
-            client_handl_rev(data)
         except Exception as err:
             print("断开连接！！" + str(sys._getframe().f_lineno) + " " + err)
-            exit(-1)
-            return
+            exit(-1)            #断开连接
+        client_handl_rev(data)  #客户端处理函数不再中断捕获中运行
 
-
+client=""
 # 节点服务器
 class ClientNode():
     def __init__(self):
+        global client
         # 客户端 发送一个数据，再接收一个数据
         self.isOpen = False
-        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # 声明socket类型，同时生成链接对象
+        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # 声明socket类型，同时生成链接对象
         try:
-            self.client.connect((SERVER_IP, SERVER_PORT))  # 建立一个链接，连接到本地的9090端口
+            client.connect((SERVER_IP, SERVER_PORT))  # 建立一个链接，连接到本地的9090端口
         except Exception as err:
             print("Error: 连接不上服务器" + str(sys._getframe().f_lineno) + " " + str(err))
             return
         try:
-            _thread.start_new_thread(client_accept_process, (self.client, SERVER_PORT))  # 创建侦听等待线程
+            _thread.start_new_thread(client_accept_process, (client, SERVER_PORT))  # 创建侦听等待线程
         except Exception as err:
             print("Error: 无法启动线程" + str(sys._getframe().f_lineno) + " " + str(err))
         print("Creat Client Node successfully!!")
@@ -66,9 +69,17 @@ class ClientNode():
         Block.blocks_clean()#清空数据库
         dataFormat = DataFormat("REGIST", "OK")
         json_str = json.dumps(dataFormat, default=DataFormat.DataFormat2dict)
-        self.client.sendall(bytes(json_str, encoding="utf-8"))
+        client.sendall(bytes(json_str, encoding="utf-8"))
         time.sleep(DEF_DELAY)
         return regist_status
+
+    @staticmethod
+    def server_add_block(block):
+        json_str = json.dumps(block, default=Block.Block2dict)  # 序列化
+        dataFormat = DataFormat(DEF_ADDBLOCK, json_str)  # 创建对象
+        sendData = json.dumps(dataFormat, default=DataFormat.DataFormat2dict)  # 反序列化
+        client.sendall(bytes(sendData, encoding="utf-8"))
+
 if __name__=="__main__":
     clientNode=ClientNode()
     while 1:

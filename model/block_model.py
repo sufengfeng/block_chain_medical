@@ -48,16 +48,29 @@ class Block(db.Model):
         block_string = json.dumps(block, sort_keys=True).encode()
         return hashlib.sha256(block_string).hexdigest()
 
-    # 添加区块
-
+    # 服务器端添加区块，不进行hash识别，只进行hask确认
     @staticmethod
-    def add_block(block, last_block):
+    def server_add_block(block, last_block):
         Session_class = sessionmaker(bind=engine)  # 建立与数据库的会话连接，这里建立的是一个class不是一个实例对象
         session = Session_class()  # 这里创建一个会话实例
-        if last_block != None:
-            block.encryption = hash(last_block)  # 同态加密
-        else:
-            block.encryption = hash(block)  # 同态加密
+        try:
+            session.add(block)  # 把要创建的数据对象加入到这个会话中，这个时候是pending状态，添加多个对象使用add_all()
+            session.commit()  # 统一提交会话中的操作
+            session.close()
+            return 0
+        except Exception as e:
+            print(str(sys._getframe().f_lineno))
+            print(e)
+            return -1
+
+    # 添加区块,使用该函数表示block已经计算完毕，等待确认后直接加入到区块链
+    @staticmethod
+    def add_block(block, last_block):
+        # if block.encryption != hash(last_block):  # 如果本次加入的hash值是上一个区块的hash则认为正确
+        #     print("该区块不满足hash，不能加入到区块链")
+        #     return -1
+        Session_class = sessionmaker(bind=engine)  # 建立与数据库的会话连接，这里建立的是一个class不是一个实例对象
+        session = Session_class()  # 这里创建一个会话实例
         try:
             session.add(block)  # 把要创建的数据对象加入到这个会话中，这个时候是pending状态，添加多个对象使用add_all()
             session.commit()  # 统一提交会话中的操作
@@ -76,6 +89,7 @@ class Block(db.Model):
         try:
             session.query(Block).filter().delete()
             session.commit()
+
             session.close()
             # session.flush()  # 再flush
         except Exception as e:
@@ -88,6 +102,7 @@ class Block(db.Model):
         return {
             'index': data.index,
             'timestamp': data.timestamp,
+
             'doctor': data.doctor,
             'patient': data.patient,
             'describe': data.describe,

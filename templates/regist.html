@@ -191,18 +191,15 @@
 	<script src="static/js/custom.js"></script>
  <script type="text/javascript" charset="UTF-8">
 		function regist(){
-		var params = {"name":document.getElementById('name').value,
-		"password":document.getElementById('password').value,
-		"role":document.getElementById('role').value,
+			var params = {"name":document.getElementById('name').value,
+			"password":document.getElementById('password').value,
+			"role":document.getElementById('role').value,
 
-		};
+			};
 
-        if(params.role!="admin"&&role!="doctor"&&role!="patient")
-        {
-           alert("the role admin doctor patient");
-            return
-        }
-            $.ajax({
+			if(params.role=="admin")
+			{
+				$.ajax({
                 url:'regist',
                 type:'POST',
                 data:JSON.stringify(params),
@@ -217,7 +214,51 @@
                     }
                 }
             })
-            }
+            return
+			}
+			if(params.role=="doctor")
+			{
+			$.ajax({
+                url:'regist',
+                type:'POST',
+                data:JSON.stringify(params),
+                contentType:'application/json',
+                success:function (response) {
+                var obj = JSON.parse(response); //由JSON字符串转换为JSON对象
+                    if (obj.errno==200){
+                        alert(obj.message);
+                        location.reload()
+                    }else{
+                        alert(response.errmsg)
+                    }
+                }
+            })
+            return
+
+			}
+			if(params.role=="patient")
+			{
+			   $.ajax({
+                url:'regist',
+                type:'POST',
+                data:JSON.stringify(params),
+                contentType:'application/json',
+                success:function (response) {
+                var obj = JSON.parse(response); //由JSON字符串转换为JSON对象
+                    if (obj.errno==200){
+                        alert(obj.message);
+                        location.reload()
+                    }else{
+                        alert(response.errmsg)
+                    }
+                }
+            })
+            return
+			}
+
+            alert("the role admin doctor patient");
+
+        }
 
     </script>
 </body>
