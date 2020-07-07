@@ -94,7 +94,7 @@ class BlockS(Base):
         timestamp = time.time()
         BlockS.tb_blocks_clean()
         block = BlockS(index=1, timestamp=timestamp, doctor="admin", patient="patient", describe="None")
-        BlockS.add_block(block, last_block=None)
+        BlockS.add_blockS(block, last_block=None)
 
     @staticmethod
     def BlockS2dict(data):
@@ -128,7 +128,7 @@ if __name__ == "__main__":
     session.close()
 
     s = BlockS("132", "2", "3", "3", "34", "43", "32")
-    json_str = json.dumps(s, default=BlockS2dict)
+    json_str = json.dumps(s, default=BlockS.BlockS2dict)
     print(json_str)
-    d_format = json.loads(json_str, object_hook=dict2BlockS)
+    d_format = json.loads(json_str, object_hook=BlockS.dict2BlockS)
     print(d_format.timestamp)

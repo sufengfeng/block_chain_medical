@@ -7,16 +7,16 @@ class DataFormat():
         self.dataType = dataType  # REGIST ADDBLOCK
         self.param = param  # OK 序列化块
 
+    @staticmethod
+    def DataFormat2dict(data):
+        return {
+            'dataType': data.dataType,
+            'param': data.param
+        }
 
-def DataFormat2dict(data):
-    return {
-        'dataType': data.dataType,
-        'param': data.param
-    }
-
-
-def dict2DataFormat(d):
-    return DataFormat(d['dataType'], d['param'])
+    @staticmethod
+    def dict2DataFormat(d):
+        return DataFormat(d['dataType'], d['param'])
 
 
 if __name__ == "__main__":

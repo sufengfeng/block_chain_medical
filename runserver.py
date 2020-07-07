@@ -231,11 +231,11 @@ if __name__ == '__main__':
 
     client = ClientNode()
     if (client == None):
+        print("创建节点服务器失败！！")
         exit(-1)
     ret = client.regesiter2server()
     if ret == 0:
         print("注册成功，节点正常运行！！")
-
         app.run(debug=True, host='127.0.0.1', port=port)
     else:
         print("服务器注册出错，开启中央服务器，并尝试再次连接！！")
