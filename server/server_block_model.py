@@ -80,7 +80,7 @@ class BlockS(Base):
 
         Session_class = sessionmaker(bind=engine)  # 建立与数据库的会话连接，这里建立的是一个class不是一个实例对象
         session = Session_class()  # 这里创建一个会话实例
-        s_current_block = block
+        s_current_block = copy.deepcopy(block)
         block.encryption = hash(s_current_block)  # 第一个block是它本身，由于时间唯一性，区块链也就有了唯一性
         try:
             session.add(block)  # 把要创建的数据对象加入到这个会话中，这个时候是pending状态，添加多个对象使用add_all()

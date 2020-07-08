@@ -1,11 +1,13 @@
 # config=utf-8
 import _thread
+import copy
 import json
 import sys
 import time
 from argparse import ArgumentParser
 
 from common import db
+from config import DEF_ADDBLOCK
 from login import userRoute
 from model import create_app, Block
 from flask_login import login_user
@@ -14,7 +16,7 @@ from flask import render_template, request, redirect
 from model.record_model import Record
 from model.user_model import User
 from server.client_node import ClientNode
-from server.central_server import CentralServer
+from server.client_node import current_block
 
 DEFAULT_MODULES = [userRoute]
 user = User()
@@ -23,9 +25,6 @@ app = create_app('../config.py')
 for module in DEFAULT_MODULES:
     app.register_blueprint(module)
 
-current_block = ""  # 记录上一个区块
-
-
 # 增加区块
 def add_Block(patient, describe):
     global user
@@ -33,11 +32,11 @@ def add_Block(patient, describe):
     timestamp = time.time()
 
     block = Block(timestamp=timestamp, doctor=user.name, patient=patient, describe=describe)
-    block.encryption = hash(current_block)  # 同态加密
+    block.encryption = str(hash(current_block))  # 同态加密
     db.session.add(block)
     db.session.commit()
-    ClientNode.server_add_block(block)
-    current_block=block        #更新当前block数据
+    ClientNode.send_ADDBLOCK_message(block)
+    current_block = copy.deepcopy(block) # 更新当前block数据
 
 
 # 查找

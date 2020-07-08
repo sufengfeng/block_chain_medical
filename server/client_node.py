@@ -1,16 +1,16 @@
 import _thread
+import copy
 import json
 import socket
 import sys
 import time
 from config import SERVER_IP, SERVER_PORT, DEF_REGIST, DEF_ADDBLOCK, DEF_DELAY
-# 服务器处理函数
 from model import Block
-from runserver import current_block
 from server.data_format import DataFormat
 
 regist_status = -1  # 是否注册成功
-
+client = ""
+current_block = ""  # 记录上一个区块
 
 # 客户端处理接收数据
 def client_handl_rev(data):
@@ -28,9 +28,10 @@ def client_handl_rev(data):
         print(d_format.param)
         block = json.loads(d_format.param, object_hook=Block.dict2Block)
         if current_block == "":  # 第一个block由中央服务器产生
-            current_block = block
+            current_block = copy.deepcopy(block)
+            print("复制区块成功"+ str(sys._getframe().f_lineno) )
         Block.server_add_block(block, current_block)
-        current_block = block
+        current_block = copy.deepcopy(block)  # 更新当前block数据
         print("添加区块成功")
     else:
         print("not support the format type：" + d_format.dataType)
@@ -46,9 +47,6 @@ def client_accept_process(client, port):
             print("断开连接！！" + str(sys._getframe().f_lineno) + " " + err)
             exit(-1)  # 断开连接
         client_handl_rev(data)  # 客户端处理函数不再中断捕获中运行
-
-
-client = ""
 
 
 # 节点服务器
@@ -83,7 +81,7 @@ class ClientNode():
         return regist_status
 
     @staticmethod
-    def server_add_block(block):
+    def send_ADDBLOCK_message(block):
         json_str = json.dumps(block, default=Block.Block2dict)  # 序列化
         dataFormat = DataFormat(DEF_ADDBLOCK, json_str)  # 创建对象
         sendData = json.dumps(dataFormat, default=DataFormat.DataFormat2dict)  # 反序列化

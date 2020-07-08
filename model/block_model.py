@@ -37,7 +37,7 @@ class Block(db.Model):
         self.encryption = encryption
 
     @staticmethod
-    def hash(block):
+    def hash_s(block):
         """
         Creates a SHA-256 hash of a Block
 
@@ -51,8 +51,12 @@ class Block(db.Model):
     # 服务器端添加区块，不进行hash识别，只进行hask确认
     @staticmethod
     def server_add_block(block, last_block):
-        if block.encryption != hash(last_block):  # 如果本次加入的hash值是上一个区块的hash则认为正确
-            print("该区块不满足hash，不能加入到区块链")
+        if block.encryption != str(hash(last_block)):  # 如果本次加入的hash值是上一个区块的hash则认为正确
+            print(block.index==last_block.index)
+            print(block.timestamp == last_block.timestamp)
+            print(block.patient == last_block.patient)
+
+            print("该区块不满足hash，不能加入到区块链!!current:"+block.encryption+" lastblock:"+str(hash(last_block)))
             return -1
         Session_class = sessionmaker(bind=engine)  # 建立与数据库的会话连接，这里建立的是一个class不是一个实例对象
         session = Session_class()  # 这里创建一个会话实例
