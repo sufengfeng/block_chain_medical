@@ -16,7 +16,7 @@ SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://root:root@localhost/blockchain
 SECRET_KEY = '*\xff\x93\xc8w\x13\x0e@3\xd6\x82\x0f\x84\x18\xe7\xd9\\|\x04e\xb9(\xfd\xc3'
 engine = create_engine(SQLALCHEMY_DATABASE_URI, echo=True)  # echo用于显示sql执行信息,设置SQLAlchemy logging
 Base = declarative_base()  # 生成orm基类
-
+s_current_block=""
 
 # 节点服务器区块结构
 class BlockS(Base):
@@ -73,13 +73,15 @@ class BlockS(Base):
     # 添加首个区块，需要填充数据，重新计算
     @staticmethod
     def add_first_block():
+        global s_current_block
         timestamp = time.time()
         BlockS.tb_blocks_clean()
         block = BlockS(index=1, timestamp=timestamp, doctor="admin", patient="patient", describe="None")
 
         Session_class = sessionmaker(bind=engine)  # 建立与数据库的会话连接，这里建立的是一个class不是一个实例对象
         session = Session_class()  # 这里创建一个会话实例
-        block.encryption = hash(block)  # 同态加密
+        s_current_block = block
+        block.encryption = hash(s_current_block)  # 第一个block是它本身，由于时间唯一性，区块链也就有了唯一性
         try:
             session.add(block)  # 把要创建的数据对象加入到这个会话中，这个时候是pending状态，添加多个对象使用add_all()
             session.commit()  # 统一提交会话中的操作
@@ -93,9 +95,9 @@ class BlockS(Base):
     # 客户端添加区块，只进行hash验证，不进行计算
     @staticmethod
     def add_blockS(block, last_block):
-        # if block.encryption != hash(last_block):  # 如果本次加入的hash值是上一个区块的hash则认为正确
-        #     print("该区块不满足hash，不能加入到区块链")
-        #     return -1
+        if block.encryption != hash(s_current_block):  # 如果本次加入的hash值是上一个区块的hash则认为正确
+            print("该区块不满足hash，不能加入到区块链")
+            return -1
         Session_class = sessionmaker(bind=engine)  # 建立与数据库的会话连接，这里建立的是一个class不是一个实例对象
         session = Session_class()  # 这里创建一个会话实例
         try:

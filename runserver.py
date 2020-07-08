@@ -23,18 +23,21 @@ app = create_app('../config.py')
 for module in DEFAULT_MODULES:
     app.register_blueprint(module)
 
+current_block = ""  # 记录上一个区块
 
 
 # 增加区块
 def add_Block(patient, describe):
     global user
+    global current_block
     timestamp = time.time()
 
     block = Block(timestamp=timestamp, doctor=user.name, patient=patient, describe=describe)
-    block.encryption = hash(block)  # 同态加密
+    block.encryption = hash(current_block)  # 同态加密
     db.session.add(block)
     db.session.commit()
     ClientNode.server_add_block(block)
+    current_block=block        #更新当前block数据
 
 
 # 查找

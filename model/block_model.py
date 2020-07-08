@@ -51,6 +51,9 @@ class Block(db.Model):
     # 服务器端添加区块，不进行hash识别，只进行hask确认
     @staticmethod
     def server_add_block(block, last_block):
+        if block.encryption != hash(last_block):  # 如果本次加入的hash值是上一个区块的hash则认为正确
+            print("该区块不满足hash，不能加入到区块链")
+            return -1
         Session_class = sessionmaker(bind=engine)  # 建立与数据库的会话连接，这里建立的是一个class不是一个实例对象
         session = Session_class()  # 这里创建一个会话实例
         try:
@@ -66,9 +69,9 @@ class Block(db.Model):
     # 添加区块,使用该函数表示block已经计算完毕，等待确认后直接加入到区块链
     @staticmethod
     def add_block(block, last_block):
-        # if block.encryption != hash(last_block):  # 如果本次加入的hash值是上一个区块的hash则认为正确
-        #     print("该区块不满足hash，不能加入到区块链")
-        #     return -1
+        if block.encryption != hash(last_block):  # 如果本次加入的hash值是上一个区块的hash则认为正确
+            print("该区块不满足hash，不能加入到区块链")
+            return -1
         Session_class = sessionmaker(bind=engine)  # 建立与数据库的会话连接，这里建立的是一个class不是一个实例对象
         session = Session_class()  # 这里创建一个会话实例
         try:

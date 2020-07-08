@@ -6,13 +6,16 @@ import time
 from config import SERVER_IP, SERVER_PORT, DEF_REGIST, DEF_ADDBLOCK, DEF_DELAY
 # 服务器处理函数
 from model import Block
+from runserver import current_block
 from server.data_format import DataFormat
 
 regist_status = -1  # 是否注册成功
 
+
 # 客户端处理接收数据
 def client_handl_rev(data):
-    print("客户端收到数据:"+data)
+    global current_block
+    print("客户端收到数据:" + data)
     global regist_status
     d_format = json.loads(data, object_hook=DataFormat.dict2DataFormat)
     if d_format.dataType == DEF_REGIST:  # 节点注册成功，则开启服务
@@ -24,7 +27,10 @@ def client_handl_rev(data):
         print("not support the format type：" + d_format.dataType)
         print(d_format.param)
         block = json.loads(d_format.param, object_hook=Block.dict2Block)
-        Block.server_add_block(block,None)
+        if current_block == "":  # 第一个block由中央服务器产生
+            current_block = block
+        Block.server_add_block(block, current_block)
+        current_block = block
         print("添加区块成功")
     else:
         print("not support the format type：" + d_format.dataType)
@@ -33,15 +39,18 @@ def client_handl_rev(data):
 # 节点服务器处理线程
 def client_accept_process(client, port):
     while 1:
-        data=""
+        data = ""
         try:
             data = str(client.recv(1024), encoding="utf-8")
         except Exception as err:
             print("断开连接！！" + str(sys._getframe().f_lineno) + " " + err)
-            exit(-1)            #断开连接
-        client_handl_rev(data)  #客户端处理函数不再中断捕获中运行
+            exit(-1)  # 断开连接
+        client_handl_rev(data)  # 客户端处理函数不再中断捕获中运行
 
-client=""
+
+client = ""
+
+
 # 节点服务器
 class ClientNode():
     def __init__(self):
@@ -66,7 +75,7 @@ class ClientNode():
         global regist_status
         if (self.isOpen == False):
             return -1
-        Block.blocks_clean()#清空数据库
+        Block.blocks_clean()  # 清空数据库
         dataFormat = DataFormat("REGIST", "OK")
         json_str = json.dumps(dataFormat, default=DataFormat.DataFormat2dict)
         client.sendall(bytes(json_str, encoding="utf-8"))
@@ -80,8 +89,9 @@ class ClientNode():
         sendData = json.dumps(dataFormat, default=DataFormat.DataFormat2dict)  # 反序列化
         client.sendall(bytes(sendData, encoding="utf-8"))
 
-if __name__=="__main__":
-    clientNode=ClientNode()
+
+if __name__ == "__main__":
+    clientNode = ClientNode()
     while 1:
         print("client running...")
         time.sleep(1)
