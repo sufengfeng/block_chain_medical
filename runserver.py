@@ -25,6 +25,7 @@ app = create_app('../config.py')
 for module in DEFAULT_MODULES:
     app.register_blueprint(module)
 
+
 # 增加区块
 def add_Block(patient, describe):
     global user
@@ -32,11 +33,12 @@ def add_Block(patient, describe):
     timestamp = time.time()
 
     block = Block(timestamp=timestamp, doctor=user.name, patient=patient, describe=describe)
+    block.index = int(current_block.index) + 1
     block.encryption = str(hash(current_block))  # 同态加密
     db.session.add(block)
     db.session.commit()
     ClientNode.send_ADDBLOCK_message(block)
-    current_block = copy.deepcopy(block) # 更新当前block数据
+    current_block = copy.deepcopy(block)  # 更新当前block数据
 
 
 # 查找

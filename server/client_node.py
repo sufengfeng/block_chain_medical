@@ -31,7 +31,6 @@ def client_handl_rev(data):
             current_block = copy.deepcopy(block)
             print("复制区块成功"+ str(sys._getframe().f_lineno) )
         Block.server_add_block(block, current_block)
-        current_block = copy.deepcopy(block)  # 更新当前block数据
         print("添加区块成功")
     else:
         print("not support the format type：" + d_format.dataType)

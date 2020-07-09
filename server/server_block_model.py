@@ -95,9 +95,9 @@ class BlockS(Base):
     # 客户端添加区块，只进行hash验证，不进行计算
     @staticmethod
     def add_blockS(block, last_block):
-        if block.encryption != hash(s_current_block):  # 如果本次加入的hash值是上一个区块的hash则认为正确
-            print("该区块不满足hash，不能加入到区块链")
-            return -1
+        # if block.encryption != hash(s_current_block):  # 如果本次加入的hash值是上一个区块的hash则认为正确
+        #     print("该区块不满足hash，不能加入到区块链")
+        #     return -1
         Session_class = sessionmaker(bind=engine)  # 建立与数据库的会话连接，这里建立的是一个class不是一个实例对象
         session = Session_class()  # 这里创建一个会话实例
         try:

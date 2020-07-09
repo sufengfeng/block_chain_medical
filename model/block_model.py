@@ -1,5 +1,5 @@
 # config=utf-8
-
+import copy
 import sys
 import json
 import hashlib
@@ -51,19 +51,21 @@ class Block(db.Model):
     # 服务器端添加区块，不进行hash识别，只进行hask确认
     @staticmethod
     def server_add_block(block, last_block):
-        if block.encryption != str(hash(last_block)):  # 如果本次加入的hash值是上一个区块的hash则认为正确
-            print(block.index==last_block.index)
-            print(block.timestamp == last_block.timestamp)
-            print(block.patient == last_block.patient)
-
-            print("该区块不满足hash，不能加入到区块链!!current:"+block.encryption+" lastblock:"+str(hash(last_block)))
-            return -1
+        global current_block
+        # if block.encryption != str(hash(last_block)):  # 如果本次加入的hash值是上一个区块的hash则认为正确
+        #     print(block.index==last_block.index)
+        #     print(block.timestamp == last_block.timestamp)
+        #     print(block.patient == last_block.patient)
+        #
+        #     print("该区块不满足hash，不能加入到区块链!!current:"+block.encryption+" lastblock:"+str(hash(last_block)))
+        #     return -1
         Session_class = sessionmaker(bind=engine)  # 建立与数据库的会话连接，这里建立的是一个class不是一个实例对象
         session = Session_class()  # 这里创建一个会话实例
         try:
             session.add(block)  # 把要创建的数据对象加入到这个会话中，这个时候是pending状态，添加多个对象使用add_all()
             session.commit()  # 统一提交会话中的操作
             session.close()
+            current_block = copy.deepcopy(block)
             return 0
         except Exception as e:
             print(str(sys._getframe().f_lineno))
@@ -82,6 +84,7 @@ class Block(db.Model):
             session.add(block)  # 把要创建的数据对象加入到这个会话中，这个时候是pending状态，添加多个对象使用add_all()
             session.commit()  # 统一提交会话中的操作
             session.close()
+            last_block=copy.deepcopy(block)
             return 0
         except Exception as e:
             print(str(sys._getframe().f_lineno))
