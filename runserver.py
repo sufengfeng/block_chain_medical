@@ -33,6 +33,9 @@ def add_Block(patient, describe):
     timestamp = time.time()
 
     block = Block(timestamp=timestamp, doctor=user.name, patient=patient, describe=describe)
+    if current_block=="":
+        blocks = get_all_blocks()
+        current_block=copy.deepcopy(blocks[0])
     block.index = int(current_block.index) + 1
     block.encryption = str(hash(current_block))  # 同态加密
     db.session.add(block)

@@ -31,3 +31,5 @@ def create_app(config_filename=None):
 
 def configure_database(app):
     db.init_app(app)
+
+

@@ -30,6 +30,7 @@ def client_handl_rev(data):
         if current_block == "":  # 第一个block由中央服务器产生
             current_block = copy.deepcopy(block)
             print("复制区块成功"+ str(sys._getframe().f_lineno) )
+            print(current_block.index)
         Block.server_add_block(block, current_block)
         print("添加区块成功")
     else:
